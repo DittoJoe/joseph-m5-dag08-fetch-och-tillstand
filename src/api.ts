@@ -1,3 +1,5 @@
+import type { Ratt, Vader, FetchFn } from "./typer";
+
 // Dag 8: riktiga nätanrop med fetch.
 // Alla funktioner tar emot fetchFn (som standard den riktiga fetch). I testerna skickar vi in en
 // falsk fetch, så att testerna inte behöver internet.
@@ -8,13 +10,13 @@
 //    - Svarar servern med fel (svar.ok är false): kasta new Error(`Servern svarade ${svar.status}`)
 //    - Annars: returnera await svar.json().
 //    Tips: fetch kastar INTE fel för 404 eller 500. Du måste själv kolla svar.ok.
-export async function hamtaJson(url, fetchFn = fetch) {
+export async function hamtaJson(url: string, fetchFn: FetchFn = fetch): Promise<unknown> {
   // TODO
 }
 
 // 2. Hämta menyn från "data/meny.json" med hamtaJson.
 //    Är svaret inte en array: kasta new Error("Menyn hade ett oväntat format").
-export async function hamtaMeny(fetchFn = fetch) {
+export async function hamtaMeny(fetchFn: FetchFn = fetch): Promise<Ratt[]> {
   // TODO
 }
 
@@ -23,7 +25,7 @@ export async function hamtaMeny(fetchFn = fetch) {
 //    Svaret har data.current med temperature_2m, wind_speed_10m och weather_code.
 //    Returnera { temperatur, vindhastighet, kod }.
 //    Saknas data.current: kasta new Error("Oväntat svar från väder-API:et").
-export async function hamtaVader(lat, lon, fetchFn = fetch) {
+export async function hamtaVader(lat: number, lon: number, fetchFn: FetchFn = fetch): Promise<Vader> {
   // TODO
 }
 
@@ -31,6 +33,6 @@ export async function hamtaVader(lat, lon, fetchFn = fetch) {
 //    0 "klart", 1-3 "mest klart eller molnigt", 45 och 48 "dimma", 51-57 "duggregn",
 //    61-67 "regn", 71-77 "snö", 80-82 "regnskurar", 85-86 "snöbyar", 95-99 "åska".
 //    Allt annat: "okänt väder".
-export function tolkaVaderkod(kod) {
+export function tolkaVaderkod(kod: number): string {
   // TODO
 }
