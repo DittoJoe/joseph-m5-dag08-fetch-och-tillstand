@@ -52,6 +52,20 @@ function ritaMeny(): void {
 //   - vidForsokIgen: laddaMenyn själv (så att knappen "Försök igen" fungerar).
 //   - visaKlar: spara tillstand.ratter i variabeln meny, anropa ritaMeny() och uppdatera ordern med visaOrder.
 function laddaMenyn(): void {
+  laddaMeny(
+    () => hamtaMeny(),
+    (tillstand) => {
+      console.log(lista)
+      visaTillstand(lista, tillstand, {
+        vidForsokIgen: laddaMenyn,
+        visaKlar: (container, klartTillstand) => {
+          meny = klartTillstand.ratter;
+          ritaMeny();
+          visaOrder(orderRef, order, meny);
+        },
+      });
+    }
+  );
 }
 
 kopplaFilter(filterGrupp, (filter) => {
@@ -86,6 +100,18 @@ const vaderFetch: FetchFn = ANVAND_RESERVDATA ? () => fetch("data/vader-stockhol
 //   I vidTillstand: visaTillstand(vaderResultat, tillstand, { vidForsokIgen: laddaVader, visaKlar }).
 //   visaKlar ska anropa visaVader(container, stad.namn, tillstand.data).
 function laddaVader(): void {
+  const stad = STADER[stadVal.value]
+  laddaData(
+    () => hamtaVader(stad.lat, stad.lon, vaderFetch),
+    (tillstand) => {
+      visaTillstand(vaderResultat, tillstand, {
+        vidForsokIgen: laddaVader,
+        visaKlar: (container, klartTillstand) => {
+          visaVader(container, stad.namn, klartTillstand.data);
+        },
+      });
+    }
+  );
 }
 
 // TODO 3: Lyssna på submit på vaderForm. Anropa preventDefault och sedan laddaVader().
@@ -94,3 +120,7 @@ function laddaVader(): void {
 visaOrder(orderRef, order, meny);
 laddaMenyn();
 laddaVader();
+vaderForm.addEventListener("submit", (event) => {
+  event.preventDefault()
+  laddaVader()
+})
