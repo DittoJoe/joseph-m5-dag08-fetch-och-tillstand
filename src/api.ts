@@ -56,5 +56,25 @@ export async function hamtaVader(lat: number, lon: number, fetchFn: FetchFn = fe
 //    61-67 "regn", 71-77 "snö", 80-82 "regnskurar", 85-86 "snöbyar", 95-99 "åska".
 //    Allt annat: "okänt väder".
 export function tolkaVaderkod(kod: number): string {
-  // TODO
+  if (kod < 1) {
+    return "klart"
+  } else if (kod < 4) {
+    return "mest klart eller molnigt"
+  } else if (kod < 49) {
+    return "dimma"
+  } else if (kod < 58) {
+    return "duggregn"
+  } else if (kod < 68) {
+    return "regn"
+  } else if (kod < 78) {
+    return "snö"
+  } else if (kod < 83) {
+    return "regnskurar"
+  } else if (kod < 87) {
+    return "snöbyar"
+  } else if (kod < 100) {
+    return "åska"
+  } else {
+    return "okänt väder"
+  }
 }
