@@ -26,7 +26,11 @@ export async function hamtaJson(url: string, fetchFn: FetchFn = fetch): Promise<
 // 2. Hämta menyn från "data/meny.json" med hamtaJson.
 //    Är svaret inte en array: kasta new Error("Menyn hade ett oväntat format").
 export async function hamtaMeny(fetchFn: FetchFn = fetch): Promise<Ratt[]> {
-  // TODO
+  const meny = await hamtaJson("data/meny.json", fetchFn);
+  if (!Array.isArray(meny)) {
+    throw new Error("Menyn hade ett oväntat format");
+  }
+  return meny;
 }
 
 // 3. Hämta aktuellt väder från Open-Meteo.
@@ -35,7 +39,16 @@ export async function hamtaMeny(fetchFn: FetchFn = fetch): Promise<Ratt[]> {
 //    Returnera { temperatur, vindhastighet, kod }.
 //    Saknas data.current: kasta new Error("Oväntat svar från väder-API:et").
 export async function hamtaVader(lat: number, lon: number, fetchFn: FetchFn = fetch): Promise<Vader> {
-  // TODO
+  let url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`
+  let svar = await fetchFn(url)
+  let data = await svar.json()
+  if (!data.current) {
+    throw new Error("Oväntat svar från väder-API:et");
+  }
+  const temperatur = data.current.temperature_2m
+  const vindhastighet = data.current.wind_speed_10m
+  const kod = data.current.weather_code
+  return {temperatur, vindhastighet, kod}
 }
 
 // 4. Översätt en väderkod (WMO) till svensk text:
